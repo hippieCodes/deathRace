@@ -29,6 +29,7 @@ var Obstacle = function ( x , y , width , height ){
 };
 
 
+
 // Helper
 var getRandomNumber = function ( ){
   return Math.random() * 100;

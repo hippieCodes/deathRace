@@ -9,7 +9,9 @@
 		</style>
 	</head>
 	<body>
-		<canvas id="myCanvas" width="300" height="700" style="border:1px solid red;"></canvas>
+		<div style="background-image:url('image/road.jpg');height: 700px; width: 300px;">
+		<canvas id="myCanvas" width="300" height="700" style="border:0px solid red;"></canvas>
+		</div>
 		<script>
 			var thirdObstacleInView = false;
 			window.requestAnimFrame = (function(callback) {
@@ -19,11 +21,12 @@
 				};
 			})();
 
-			function drawRectangle(obstacle, context) {
-				context.beginPath();
-				context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-				context.fillStyle = obstacle.color;
-				context.fill();
+			function drawTank(tank, context) {
+				context.drawImage(tank.tankSource, tank.x, tank.y);
+				// context.beginPath();
+				// context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+				// context.fillStyle = obstacle.color;
+				// context.fill();
 				//context.lineWidth = obstacle.borderWidth;
 				//context.strokeStyle = 'black';
 				//context.stroke();
@@ -39,18 +42,21 @@
 
 				context.clearRect(obstacle.x, obstacle.y - 2, obstacle.width + 1, obstacle.height);
 				if (newY < canvas.height - obstacle.height / 2) {
-					if (newY >= 100 && !thirdObstacleInView) {
-						drawRectangle(middleObstacle, context);
+					if (newY >= 200 && !thirdObstacleInView) {
+						drawTank(middleObstacle, context);
 						var startTime1 = (new Date()).getTime();
 						animate(middleObstacle, canvas, context, startTime1);
 						thirdObstacleInView = true;
 					}
 					obstacle.y = newY;
 				}
+				else {
+					removeObject(obstacle);
+				}
 
 				// clear
 
-				drawRectangle(obstacle, context);
+				drawTank(obstacle, context);
 
 				// request new frame
 				requestAnimFrame(function() {
@@ -61,53 +67,80 @@
 			var canvas = document.getElementById('myCanvas');
 			var context = canvas.getContext('2d');
 
+			var tankImage = new Image();
+			tankImage.src = 'image/tank.png';
+var removeObject = function(maal, context) {
+	context.save();
+				context.clearRect(maal.x, maal.y, maal.width, maal.height);
+				context.restore();
+}
+
 			var leftObstacle = {
-				x : 0,
+				x : 30,
 				y : 0,
-				width : 100,
-				height : 5,
-				borderWidth : 0,
-				color : '#8ED6FF'
+				width : 41,
+				height : 100,
+				tankSource: tankImage
 			};
 			var rightObstacle = {
-				x : 200,
+				x : 230,
 				y : 0,
-				width : 100,
-				height : 5,
-				borderWidth : 0,
-				color : '#000000'
+				width : 41,
+				height : 100,
+				tankSource: tankImage
 			};
 			var middleObstacle = {
-				x : 100,
+				x : 130,
 				y : 0,
-				width : 100,
-				height : 5,
-				borderWidth : 0,
-				color : '#FF0000'
+				width : 41,
+				height : 100,
+				tankSource: tankImage
 			};
 
+
+			var bombImage = new Image();
+			bombImage.src = 'image/truck_small.png';
 			var bomb = {
 				x : 135,
 				y : 600,
-				width : 30,
-				height : 50,
-				borderWidth : 0,
-				color : '#990099'
+				width : 33,
+				height : 100,
+				bombSource:bombImage
 			};
+			bombImage.onload = function() {
+				drawBomb(bomb);
+			}
+			var drawBomb = function (bomb) {
+				context.drawImage(bomb.bombSource, bomb.x, bomb.y);
+			}
+			window.addEventListener("keydown", function(e){ 
+				console.log(e.keyCode);
+				if (e.keyCode===37)
+				{
+					moveBombLeft();
+				}
+				else if(e.keyCode===39)
+				{
+					moveBombRight();
+				}
+				
+				}, true);
 
-			drawRectangle(rightObstacle, context);
-			drawRectangle(leftObstacle, context);
-			//drawRectangle(middleObstacle, context);
-			drawRectangle(bomb, context);
+			drawTank(rightObstacle, context);
+			drawTank(leftObstacle, context);
+			
 			var moveBombLeft = function() {
+				if (bomb.x === 35) return;
+				removeObject(bomb, context);
 				bomb.x = bomb.x - 100;
-				drawRectangle(bomb, context);
-
+				drawBomb(bomb);
+				//drawTank(bomb, context);
 			};
 			var moveBombRight = function() {
+				if (bomb.x === 235) return;
+				removeObject(bomb, context);
 				bomb.x = bomb.x + 100;
-				drawRectangle(bomb, context);
-
+				drawBomb(bomb);
 			};
 			// wait one second before starting animation
 			var timeId = setTimeout(function() {
