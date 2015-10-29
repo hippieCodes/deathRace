@@ -1,124 +1,121 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <style>
-      body {
-        margin: 0px;
-        padding: 0px;
-      }
-    </style>
-  </head>
-  <body>
-    <canvas id="myCanvas" width="300" height="700" style="border:1px solid red;"></canvas>
-    <script>
-    
+	<head>
+		<style>
+			body {
+				margin: 0px;
+				padding: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="myCanvas" width="300" height="700" style="border:1px solid red;"></canvas>
+		<script>
+			var thirdObstacleInView = false;
+			window.requestAnimFrame = (function(callback) {
+				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+				function(callback) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+			})();
 
-    var thirdObstacleInView = false;
-      window.requestAnimFrame = (function(callback) {
-        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-        function(callback) {
-          window.setTimeout(callback, 1000 / 60);
-        };
-      })();
+			function drawRectangle(obstacle, context) {
+				context.beginPath();
+				context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+				context.fillStyle = obstacle.color;
+				context.fill();
+				//context.lineWidth = obstacle.borderWidth;
+				//context.strokeStyle = 'black';
+				//context.stroke();
+			}
 
-      function drawRectangle(obstacle, context) {
-        context.beginPath();
-        context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-        context.fillStyle = obstacle.color;
-        context.fill();
-        //context.lineWidth = obstacle.borderWidth;
-        //context.strokeStyle = 'black';
-        //context.stroke();
-      }
-      function animate(obstacle, canvas, context, startTime) {
-        // update
-        var time = (new Date()).getTime() - startTime;
+			function animate(obstacle, canvas, context, startTime) {
+				// update
+				var time = (new Date()).getTime() - startTime;
 
-        var linearSpeed = 100;
-        // pixels / second
-        var newY = linearSpeed * time / 1000;
+				var linearSpeed = 100;
+				// pixels / second
+				var newY = linearSpeed * time / 1000;
 
-		context.clearRect(obstacle.x, obstacle.y-2, obstacle.width+1, obstacle.height);
-        if(newY < canvas.height - obstacle.height / 2) {
-        	if (newY >= 100 && ! thirdObstacleInView) 
-        	{
-        	   drawRectangle(middleObstacle, context);
-        	   var startTime1 = (new Date()).getTime();
-               animate(middleObstacle, canvas, context, startTime1);
-               thirdObstacleInView = true;
-        	}
-          obstacle.y = newY;
-        }
-        
-        // clear
-        
+				context.clearRect(obstacle.x, obstacle.y - 2, obstacle.width + 1, obstacle.height);
+				if (newY < canvas.height - obstacle.height / 2) {
+					if (newY >= 100 && !thirdObstacleInView) {
+						drawRectangle(middleObstacle, context);
+						var startTime1 = (new Date()).getTime();
+						animate(middleObstacle, canvas, context, startTime1);
+						thirdObstacleInView = true;
+					}
+					obstacle.y = newY;
+				}
 
-        drawRectangle(obstacle, context);
+				// clear
 
-        // request new frame
-        requestAnimFrame(function() {
-          animate(obstacle, canvas, context, startTime);
-        });
-      }
-      var canvas = document.getElementById('myCanvas');
-      var context = canvas.getContext('2d');
+				drawRectangle(obstacle, context);
 
+				// request new frame
+				requestAnimFrame(function() {
+					animate(obstacle, canvas, context, startTime);
+				});
+			}
 
-      var leftObstacle = {
-        x: 0,
-        y: 0,
-        width: 100,
-        height: 5,
-        borderWidth: 0,
-        color: '#8ED6FF'
-      };
-      var rightObstacle = {
-      	x: 200,
-        y: 0,
-        width: 100,
-        height: 5,
-        borderWidth: 0,
-        color: '#000000'
-      };
-      var middleObstacle = {
-      	x: 100,
-        y: 0,
-        width: 100,
-        height: 5,
-        borderWidth: 0,
-        color: '#FF0000'
-      };
+			var canvas = document.getElementById('myCanvas');
+			var context = canvas.getContext('2d');
 
-var bomb = {
-		x: 135,
-        y: 600,
-        width: 30,
-        height: 50,
-        borderWidth: 0,
-        color: '#990099'
-}
+			var leftObstacle = {
+				x : 0,
+				y : 0,
+				width : 100,
+				height : 5,
+				borderWidth : 0,
+				color : '#8ED6FF'
+			};
+			var rightObstacle = {
+				x : 200,
+				y : 0,
+				width : 100,
+				height : 5,
+				borderWidth : 0,
+				color : '#000000'
+			};
+			var middleObstacle = {
+				x : 100,
+				y : 0,
+				width : 100,
+				height : 5,
+				borderWidth : 0,
+				color : '#FF0000'
+			};
 
-      drawRectangle(rightObstacle, context);
-    drawRectangle(leftObstacle, context);
-	//drawRectangle(middleObstacle, context);
-	drawRectangle(bomb, context);
-	var moveBombLeft = function() {
-		bomb.x = bomb.x - 100; 
-		drawRectangle(bomb, context);
+			var bomb = {
+				x : 135,
+				y : 600,
+				width : 30,
+				height : 50,
+				borderWidth : 0,
+				color : '#990099'
+			};
 
-	};
-	var moveBombRight = function() {
-		bomb.x = bomb.x + 100; 
-		drawRectangle(bomb, context);
+			drawRectangle(rightObstacle, context);
+			drawRectangle(leftObstacle, context);
+			//drawRectangle(middleObstacle, context);
+			drawRectangle(bomb, context);
+			var moveBombLeft = function() {
+				bomb.x = bomb.x - 100;
+				drawRectangle(bomb, context);
 
-	};
-      // wait one second before starting animation
-      var timeId = setTimeout(function() {
-        var startTime = (new Date()).getTime();
-        animate(leftObstacle, canvas, context, startTime);
-        animate(rightObstacle, canvas, context, startTime);
+			};
+			var moveBombRight = function() {
+				bomb.x = bomb.x + 100;
+				drawRectangle(bomb, context);
 
-      }, 1000);
-    </script>
-  </body>
-</html>      
+			};
+			// wait one second before starting animation
+			var timeId = setTimeout(function() {
+				var startTime = (new Date()).getTime();
+				animate(leftObstacle, canvas, context, startTime);
+				animate(rightObstacle, canvas, context, startTime);
+
+			}, 1000);
+		</script>
+	</body>
+</html>
