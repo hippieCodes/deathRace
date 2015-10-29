@@ -11,6 +11,8 @@
   <body>
     <canvas id="myCanvas" width="300" height="700" style="border:1px solid red;"></canvas>
     <script>
+    
+
     var thirdObstacleInView = false;
       window.requestAnimFrame = (function(callback) {
         return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -36,6 +38,7 @@
         // pixels / second
         var newY = linearSpeed * time / 1000;
 
+		context.clearRect(obstacle.x, obstacle.y-2, obstacle.width+1, obstacle.height);
         if(newY < canvas.height - obstacle.height / 2) {
         	if (newY >= 100 && ! thirdObstacleInView) 
         	{
@@ -48,7 +51,7 @@
         }
         
         // clear
-        context.clearRect(obstacle.x, obstacle.y-5, obstacle.width+5, obstacle.height);
+        
 
         drawRectangle(obstacle, context);
 
@@ -86,13 +89,29 @@
         color: '#FF0000'
       };
 
-
+var bomb = {
+		x: 135,
+        y: 600,
+        width: 30,
+        height: 50,
+        borderWidth: 0,
+        color: '#990099'
+}
 
       drawRectangle(rightObstacle, context);
     drawRectangle(leftObstacle, context);
 	//drawRectangle(middleObstacle, context);
+	drawRectangle(bomb, context);
+	var moveBombLeft = function() {
+		bomb.x = bomb.x - 100; 
+		drawRectangle(bomb, context);
 
+	};
+	var moveBombRight = function() {
+		bomb.x = bomb.x + 100; 
+		drawRectangle(bomb, context);
 
+	};
       // wait one second before starting animation
       var timeId = setTimeout(function() {
         var startTime = (new Date()).getTime();
