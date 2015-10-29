@@ -13,6 +13,10 @@
 		<canvas id="myCanvas" width="300" height="700" style="border:0px solid red;"></canvas>
 		</div>
 		<script>
+		var gameStartTime;
+		var nextLevelTime = 15000;
+		var linearSpeed = 100;
+
 			var thirdObstacleInView = false;
 			window.requestAnimFrame = (function(callback) {
 				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
@@ -36,7 +40,6 @@
 				// update
 				var time = (new Date()).getTime() - startTime;
 
-				var linearSpeed = 100;
 				// pixels / second
 				var newY = linearSpeed * time / 1000;
 
@@ -114,7 +117,6 @@ var removeObject = function(maal, context) {
 				context.drawImage(bomb.bombSource, bomb.x, bomb.y);
 			}
 			window.addEventListener("keydown", function(e){ 
-				console.log(e.keyCode);
 				if (e.keyCode===37)
 				{
 					moveBombLeft();
@@ -145,9 +147,15 @@ var removeObject = function(maal, context) {
 			// wait one second before starting animation
 			var timeId = setTimeout(function() {
 				var startTime = (new Date()).getTime();
+				gameStartTime = startTime;
 				animate(leftObstacle, canvas, context, startTime);
 				animate(rightObstacle, canvas, context, startTime);
-
+				setInterval(function()){
+					if((new Date()).getTime() - gameStartTime >= nextLevelTime){
+						gameStartTime = new Date()).getTime();
+						linearSpeed = linearSpeed * 1.25; 
+					}
+				},1000;
 			}, 1000);
 		</script>
 	</body>
