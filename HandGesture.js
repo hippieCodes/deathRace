@@ -5,7 +5,6 @@ function loader() {
   var video = document.createElement("video");
   var oldFistPos;
   var detector;
-
   try {
       compatibility.getUserMedia({video:true}, function(stream) {
       try {
@@ -61,8 +60,15 @@ function loader() {
           var dx = (fistPos[0] - oldFistPos[0]) / video.videoWidth,
               dy = (fistPos[1] - oldFistPos[1]) / video.videoHeight;
 
-              if ( dx > 0 ) console.log ( "left" );
-              else if ( dx < 0 ) console.log ( "right" );
+              if ( dx > 0 ) 
+                {
+                  moveBombLeft();
+                  console.log ( "left" );
+                }
+              else if ( dx < 0 ) {
+                  moveBombRight();
+               console.log ( "right" ); 
+              }
 
               if ( dy > 0 ) console.log ( "down" );
               else if ( dy < 0 ) console.log ( "up" );

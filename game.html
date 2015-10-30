@@ -7,10 +7,21 @@
 				padding: 0px;
 			}
 		</style>
+		<!-- from tushar -->
+		<script type="text/javascript" src="HandGesture.js"></script> 
+        <script type="text/javascript" src="Libs/compatibility.js"></script>
+        <script type="text/javascript" src="Libs/objectdetect.js"></script>
+		<script type="text/javascript" src="Libs/objectdetect.handfist.js"></script>
+ 		<script type="text/javascript" src="Libs/jquery.js"></script>
+
+		<!-- end -->
 	</head>
 	<body>
 		<div style="background-image:url('image/road.jpg');height: 700px; width: 300px;">
 		<canvas id="myCanvas" width="300" height="700" style="border:0px solid red;"></canvas>
+        <!-- from tushar -->
+		<canvas id="videoCanvas" style="position: fixed; z-index: 1001;top: 10px; right: 10px; opacity: 0.9"> </canvas>
+		<!-- end -->
 		</div>
 		<script>
 		var gameStartTime;
@@ -132,10 +143,13 @@
 			drawTank(leftObstacle, context);
 
 			var moveBombLeft = function() {
+
+				console.log("moving left");
 				if (bomb.x === 35) return;
 				removeObject(bomb, context);
 				bomb.x = bomb.x - 100;
 				drawBomb(bomb);
+				console.log("moving left");
 				//drawTank(bomb, context);
 			};
 			var moveBombRight = function() {
