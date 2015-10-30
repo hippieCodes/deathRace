@@ -60,18 +60,18 @@ function loader() {
           var dx = (fistPos[0] - oldFistPos[0]) / video.videoWidth,
               dy = (fistPos[1] - oldFistPos[1]) / video.videoHeight;
 
-              if ( dx > 0 ) 
+              if ( dx > 0 )
                 {
                   moveBombLeft();
-                  console.log ( "left" );
+                  // console.log ( "left" );
                 }
               else if ( dx < 0 ) {
                   moveBombRight();
-               console.log ( "right" ); 
+              //  console.log ( "right" );
               }
 
-              if ( dy > 0 ) console.log ( "down" );
-              else if ( dy < 0 ) console.log ( "up" );
+              // if ( dy > 0 ) console.log ( "down" );
+              // else if ( dy < 0 ) console.log ( "up" );
         }
         else oldFistPos = fistPos;
 

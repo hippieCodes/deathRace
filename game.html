@@ -67,6 +67,12 @@
 					obstacle.y = newY;
 				}
 				else {
+					var index = obstaclesOnScreen.indexOf(obstacle);
+					// console.log ( "currentIndex : "  + obstaclesOnScreen.indexOf(obstacle) );
+					if (index > -1) {
+					    obstaclesOnScreen.splice(index, 1);
+							// console.log ( "length of array : " + obstaclesOnScreen.length );
+					}
 					removeObject(obstacle);
 				}
 
@@ -90,10 +96,7 @@
 				context.clearRect(maal.x, maal.y, maal.width, maal.height);
 				context.restore();
 
-				var index = obstaclesOnScreen.indexOf(maal);
-				if (index > -1) {
-				    obstaclesOnScreen.splice(index, 1);
-				}
+
 
 			}
 
@@ -210,6 +213,7 @@
 
 			var canAddObstacle = function ( curTime ){
 			  var canAdd = false;
+				// console.log ( obstaclesOnScreen.length );
 			  if ( !obstaclesOnScreen.length ) return true;
 			  // var curY = ( linearSpeed * curTime ) / 1000;
 			  var prevObsY = ( obstaclesOnScreen[ obstaclesOnScreen.length - 1 ] ).y;
@@ -226,7 +230,7 @@
 				// animate(leftObstacle, canvas, context, startTime);
 				// animate(rightObstacle, canvas, context, startTime);
 
-				if ( canAddObstacle( curTime ) && getRandomNumber( ) < 50 ) {
+				if ( canAddObstacle( curTime ) && getRandomNumber( ) < 20 ) {
 
 			    var randomValue = getRandomNumber( );
 					var curObstacle = new Obstacle (  30 , 0 , 41 , 100 , tankImage );
