@@ -29,6 +29,10 @@
 		var gameStartTime;
 		var nextLevelTime = 15000;
 		var linearSpeed = 100;
+		var explosion = new Image();
+		explosion.src = "image/explosion.png";
+		var gameFinished = false;
+		var gameEndTime = 500;
 
 			var thirdObstacleInView = false;
 			window.requestAnimFrame = (function(callback) {
@@ -40,13 +44,6 @@
 
 			function drawTank(tank, context) {
 				context.drawImage(tank.image, tank.x, tank.y);
-				// context.beginPath();
-				// context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-				// context.fillStyle = obstacle.color;
-				// context.fill();
-				//context.lineWidth = obstacle.borderWidth;
-				//context.strokeStyle = 'black';
-				//context.stroke();
 			}
 
 			function animate(obstacle, canvas, context, startTime) {
@@ -58,12 +55,6 @@
 
 				context.clearRect(obstacle.x, obstacle.y - 2, obstacle.width + 1, obstacle.height);
 				if (newY < canvas.height - obstacle.height / 2) {
-					// if (newY >= 200 && !thirdObstacleInView) {
-					// 	drawTank(middleObstacle, context);
-					// 	var startTime1 = (new Date()).getTime();
-					// 	animate(middleObstacle, canvas, context, startTime1);
-					// 	thirdObstacleInView = true;
-					// }
 					obstacle.y = newY;
 				}
 				else {
@@ -91,7 +82,7 @@
 
 			var tankImage = new Image();
 			tankImage.src = 'image/tank.png';
-			var removeObject = function(maal, context) {
+			var removeObject = function(maal) {
 				context.save();
 				context.clearRect(maal.x, maal.y, maal.width, maal.height);
 				context.restore();
@@ -150,11 +141,8 @@
 
 			}, true);
 
-			// drawTank(rightObstacle, context);
-			// drawTank(leftObstacle, context);
-
 			var moveBombLeft = function() {
-
+				if (gameFinished) return;
 				// console.log("moving left");
 				if (bomb.x === 35) return;
 				removeObject(bomb, context);
@@ -164,6 +152,7 @@
 				//drawTank(bomb, context);
 			};
 			var moveBombRight = function() {
+				if (gameFinished) return;
 				if (bomb.x === 235) return;
 				removeObject(bomb, context);
 				bomb.x = bomb.x + 100;
@@ -223,7 +212,7 @@
 
 
 			//---------End
-
+var startGame = function () {
 			var obstacleLooper = setInterval(function() {
 				var curTime = (new Date()).getTime();
 				if (!gameStartTime ) gameStartTime = curTime;
@@ -242,17 +231,31 @@
 			  }
 
 			}, 1000/10);
-
+}
 			var speedLooper = setInterval(function(){
 				if(gameStartTime && (new Date()).getTime() - gameStartTime >= nextLevelTime){
 					gameStartTime = (new Date()).getTime();
 					linearSpeed = linearSpeed * 1.25;
 				}
+				else if (gameStartTime && (new Date()).getTime() - gameStartTime >= gameEndTime) {
+					gameFinished = true;
+					linearSpeed = 0;
+					var winImage = new Image();
+					winImage.src = "image/youwin.jpg";
+					winImage.onload = function () {
+						context.clearRect(0,0, 300, 700);
+						context.drawImage(winImage, 0, 150);
+					};
+				}
 			},1000);
 
 			var eventCheckLooper = setInterval( function ( ){
 				if ( checkCollisions ( bomb ) ){
-					console.log ( "collided" );
+					gameFinished = true;
+					linearSpeed = 0;
+					removeObject(bomb);
+					context.drawImage(explosion, bomb.x - 32, bomb.y);
+
 				}
 			} , 100/10 );
 

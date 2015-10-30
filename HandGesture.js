@@ -27,7 +27,7 @@ function loader() {
     if (video.paused) video.play();
     // console.log( video.videoWidth > 0 );
     if (video.readyState === video.HAVE_ENOUGH_DATA && video.videoWidth > 0) {
-
+startGame();
       /* Prepare the detector once the video dimensions are known: */
       if (!detector) {
           var width = ~~(80 * video.videoWidth / video.videoHeight);
