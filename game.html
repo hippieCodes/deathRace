@@ -212,7 +212,7 @@
 
 
 			//---------End
-var startGame = function () {
+			var startGame = function () {
 			var obstacleLooper = setInterval(function() {
 				var curTime = (new Date()).getTime();
 				if (!gameStartTime ) gameStartTime = curTime;
@@ -231,7 +231,7 @@ var startGame = function () {
 			  }
 
 			}, 1000/10);
-}
+		}
 			var speedLooper = setInterval(function(){
 				if(gameStartTime && (new Date()).getTime() - gameStartTime >= nextLevelTime){
 					gameStartTime = (new Date()).getTime();
@@ -255,7 +255,10 @@ var startGame = function () {
 					linearSpeed = 0;
 					removeObject(bomb);
 					context.drawImage(explosion, bomb.x - 32, bomb.y);
-
+					
+					clearInterval ( startGame );
+					clearInterval ( speedLooper );
+					clearInterval ( eventCheckLooper );
 				}
 			} , 100/10 );
 
