@@ -21,11 +21,12 @@ var hasCollided = function ( actor , object ){
 }
 
 // Obstacle Class
-var Obstacle = function ( x , y , width , height ){
+var Obstacle = function ( x , y , width , height , image ){
   this.x = x;
   this.y = y;
   this.width = width;
   this.height = height;
+  this.image = image;
 };
 
 

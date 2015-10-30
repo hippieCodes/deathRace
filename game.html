@@ -8,7 +8,7 @@
 			}
 		</style>
 		<!-- from tushar -->
-		<script type="text/javascript" src="HandGesture.js"></script> 
+		<script type="text/javascript" src="HandGesture.js"></script>
         <script type="text/javascript" src="Libs/compatibility.js"></script>
         <script type="text/javascript" src="Libs/objectdetect.js"></script>
 		<script type="text/javascript" src="Libs/objectdetect.handfist.js"></script>
@@ -25,6 +25,7 @@
 		<!-- end -->
 		</div>
 		<script>
+		var obstaclesOnScreen = [];
 		var gameStartTime;
 		var nextLevelTime = 15000;
 		var linearSpeed = 100;
@@ -38,7 +39,7 @@
 			})();
 
 			function drawTank(tank, context) {
-				context.drawImage(tank.tankSource, tank.x, tank.y);
+				context.drawImage(tank.image, tank.x, tank.y);
 				// context.beginPath();
 				// context.rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
 				// context.fillStyle = obstacle.color;
@@ -57,12 +58,12 @@
 
 				context.clearRect(obstacle.x, obstacle.y - 2, obstacle.width + 1, obstacle.height);
 				if (newY < canvas.height - obstacle.height / 2) {
-					if (newY >= 200 && !thirdObstacleInView) {
-						drawTank(middleObstacle, context);
-						var startTime1 = (new Date()).getTime();
-						animate(middleObstacle, canvas, context, startTime1);
-						thirdObstacleInView = true;
-					}
+					// if (newY >= 200 && !thirdObstacleInView) {
+					// 	drawTank(middleObstacle, context);
+					// 	var startTime1 = (new Date()).getTime();
+					// 	animate(middleObstacle, canvas, context, startTime1);
+					// 	thirdObstacleInView = true;
+					// }
 					obstacle.y = newY;
 				}
 				else {
@@ -88,6 +89,12 @@
 				context.save();
 				context.clearRect(maal.x, maal.y, maal.width, maal.height);
 				context.restore();
+
+				var index = obstaclesOnScreen.indexOf(maal);
+				if (index > -1) {
+				    obstaclesOnScreen.splice(index, 1);
+				}
+
 			}
 
 			var leftObstacle = {
@@ -129,28 +136,28 @@
 				context.drawImage(bomb.bombSource, bomb.x, bomb.y);
 			}
 			window.addEventListener("keydown", function(e){
-				if (e.keyCode===37)
-				{
-					moveBombLeft();
-				}
-				else if(e.keyCode===39)
-				{
-					moveBombRight();
-				}
+			if (e.keyCode===37)
+			{
+				moveBombLeft();
+			}
+			else if(e.keyCode===39)
+			{
+				moveBombRight();
+			}
 
-				}, true);
+			}, true);
 
-			drawTank(rightObstacle, context);
-			drawTank(leftObstacle, context);
+			// drawTank(rightObstacle, context);
+			// drawTank(leftObstacle, context);
 
 			var moveBombLeft = function() {
 
-				console.log("moving left");
+				// console.log("moving left");
 				if (bomb.x === 35) return;
 				removeObject(bomb, context);
 				bomb.x = bomb.x - 100;
 				drawBomb(bomb);
-				console.log("moving left");
+				// console.log("moving left");
 				//drawTank(bomb, context);
 			};
 			var moveBombRight = function() {
@@ -159,19 +166,92 @@
 				bomb.x = bomb.x + 100;
 				drawBomb(bomb);
 			};
-			// wait one second before starting animation
-			var timeId = setTimeout(function() {
-				var startTime = (new Date()).getTime();
-				gameStartTime = startTime;
-				animate(leftObstacle, canvas, context, startTime);
-				animate(rightObstacle, canvas, context, startTime);
-				setInterval(function(){
-					if((new Date()).getTime() - gameStartTime >= nextLevelTime){
-						gameStartTime = (new Date()).getTime();
-						linearSpeed = linearSpeed * 1.25;
-					}
-				},1000);
-			}, 1000);
+
+			//------------Start
+
+			// var linearSpeed = 100;
+
+			// Collision
+			var checkCollisions = function ( actor ){
+			  //var detectedCollisions = [];
+
+			  for ( var i=0 ; i<obstaclesOnScreen.length ; i++ ){
+			    if ( hasCollided ( actor , obstaclesOnScreen[i] ) )
+			      // detectedCollisions.push ( objects[i] );
+						return true;
+			  }
+
+			  // return detectedCollisions;
+				return false;
+			}
+
+			var hasCollided = function ( actor , object ){
+			   return (actor.x < object.x + object.width  &&
+			           actor.x + actor.width > object.x   &&
+			           actor.y < object.y + object.height &&
+			           actor.height + actor.y > object.y);
+			}
+
+			// Obstacle Class
+			var Obstacle = function ( x , y , width , height , image ){
+			  this.x = x;
+			  this.y = y;
+			  this.width = width;
+			  this.height = height;
+			  this.image = image;
+			};
+
+
+
+			// Helper
+			var getRandomNumber = function ( ){
+			  return Math.random() * 100;
+			}
+
+			var canAddObstacle = function ( curTime ){
+			  var canAdd = false;
+			  if ( !obstaclesOnScreen.length ) return true;
+			  // var curY = ( linearSpeed * curTime ) / 1000;
+			  var prevObsY = ( obstaclesOnScreen[ obstaclesOnScreen.length - 1 ] ).y;
+				// console.log ( prevObsY + " " + curY );
+			  return (prevObsY ) > 250;
+			}
+
+
+			//---------End
+
+			var obstacleLooper = setInterval(function() {
+				var curTime = (new Date()).getTime();
+				if (!gameStartTime ) gameStartTime = curTime;
+				// animate(leftObstacle, canvas, context, startTime);
+				// animate(rightObstacle, canvas, context, startTime);
+
+				if ( canAddObstacle( curTime ) && getRandomNumber( ) < 50 ) {
+
+			    var randomValue = getRandomNumber( );
+					var curObstacle = new Obstacle (  30 , 0 , 41 , 100 , tankImage );
+					obstaclesOnScreen.push ( curObstacle );
+					if ( randomValue > 33 ) curObstacle.x += 100;
+			    if ( randomValue > 66 ) curObstacle.x += 100;
+
+			    animate ( curObstacle , canvas , context , curTime );
+			  }
+
+			}, 1000/10);
+
+			var speedLooper = setInterval(function(){
+				if(gameStartTime && (new Date()).getTime() - gameStartTime >= nextLevelTime){
+					gameStartTime = (new Date()).getTime();
+					linearSpeed = linearSpeed * 1.25;
+				}
+			},1000);
+
+			var eventCheckLooper = setInterval( function ( ){
+				if ( checkCollisions ( bomb ) ){
+					console.log ( "collided" );
+				}
+			} , 100/10 );
+
 		</script>
 	</body>
 </html>
