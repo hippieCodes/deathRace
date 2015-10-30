@@ -32,7 +32,7 @@ function loader() {
       if (!detector) {
           var width = ~~(80 * video.videoWidth / video.videoHeight);
           var height = 80;
-          detector = new objectdetect.detector(width, height, 1.1, objectdetect.handfist);
+          detector = new objectdetect.detector(width, height, 1.1, objectdetect.frontalface);
       }
       canvas.width = ~~(100 * video.videoWidth / video.videoHeight);
       canvas.height = 100;
