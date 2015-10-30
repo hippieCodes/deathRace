@@ -72,11 +72,11 @@
 
 			var tankImage = new Image();
 			tankImage.src = 'image/tank.png';
-var removeObject = function(maal, context) {
-	context.save();
+			var removeObject = function(maal, context) {
+				context.save();
 				context.clearRect(maal.x, maal.y, maal.width, maal.height);
 				context.restore();
-}
+			}
 
 			var leftObstacle = {
 				x : 30,
@@ -116,7 +116,7 @@ var removeObject = function(maal, context) {
 			var drawBomb = function (bomb) {
 				context.drawImage(bomb.bombSource, bomb.x, bomb.y);
 			}
-			window.addEventListener("keydown", function(e){ 
+			window.addEventListener("keydown", function(e){
 				if (e.keyCode===37)
 				{
 					moveBombLeft();
@@ -125,12 +125,12 @@ var removeObject = function(maal, context) {
 				{
 					moveBombRight();
 				}
-				
+
 				}, true);
 
 			drawTank(rightObstacle, context);
 			drawTank(leftObstacle, context);
-			
+
 			var moveBombLeft = function() {
 				if (bomb.x === 35) return;
 				removeObject(bomb, context);
@@ -150,12 +150,12 @@ var removeObject = function(maal, context) {
 				gameStartTime = startTime;
 				animate(leftObstacle, canvas, context, startTime);
 				animate(rightObstacle, canvas, context, startTime);
-				setInterval(function()){
+				setInterval(function(){
 					if((new Date()).getTime() - gameStartTime >= nextLevelTime){
-						gameStartTime = new Date()).getTime();
-						linearSpeed = linearSpeed * 1.25; 
+						gameStartTime = (new Date()).getTime();
+						linearSpeed = linearSpeed * 1.25;
 					}
-				},1000;
+				},1000);
 			}, 1000);
 		</script>
 	</body>
